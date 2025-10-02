@@ -1,0 +1,13 @@
+{
+  "name": "Translator API Checker",
+  "description": "Checks the availability of the Chrome Built-in Translator API for 68 languages on the current machine.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "scripting"
+  ]
+}
