@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3ff6;
+            background-color: #f3f4f6;
         }
         .summary-header {
             display: flex;
@@ -37,7 +37,7 @@
             Chrome Translator API Language Checker
         </h1>
         <p class="text-center text-sm text-gray-500 mb-6">
-            Testing all unique language roots for availability in three different translation directions.
+            Testing a predefined list of 68 unique BCP 47 language roots for availability.
         </p>
 
         <div id="status" class="mb-6 p-4 rounded-lg text-center bg-yellow-100 text-yellow-800 border border-yellow-300 font-medium">
@@ -56,67 +56,37 @@
     <script>
         // --- Language List Preparation ---
 
-        // The full list provided by the user
-        const fullLanguageList = `
-            af-ZA Afrikaans South Africa, am-ET Amharic Ethiopia, ar-SA Arabic Saudi Arabia,
-            az-AZ Azerbaijani Azerbaijan, be-BY Belarusian Belarus, bg-BG Bulgarian Bulgaria,
-            bn-IN Bengali India, bs-BA Bosnian Bosnia and Herzegovina, ca-ES Catalan Spain,
-            cs-CZ Czech Czech Republic, cy-GB Welsh United Kingdom, da-DK Danish Denmark,
-            de-AT German Austria, de-CH German Switzerland, de-DE German Germany,
-            el-GR Greek Greece, en-AU English Australia, en-CA English Canada,
-            en-GB English United Kingdom, en-IE English Ireland, en-IN English India,
-            en-NZ English New Zealand, en-US English United States, en-ZA English South Africa,
-            es-AR Spanish Argentina, es-CL Spanish Chile, es-CO Spanish Colombia,
-            es-ES Spanish Spain, es-MX Spanish Mexico, es-PE Spanish Peru,
-            et-EE Estonian Estonia, fa-IR Persian Iran, fi-FI Finnish Finland,
-            fil-PH Filipino Philippines, fr-BE French Belgium, fr-CA French Canada,
-            fr-CH French Switzerland, fr-FR French France, ga-IE Irish Ireland,
-            gl-ES Galician Spain, gu-IN Gujarati India, he-IL Hebrew Israel,
-            hi-IN Hindi India, hr-HR Croatian Croatia, hu-HU Hungarian Hungary,
-            id-ID Indonesian Indonesia, is-IS Icelandic Iceland, it-CH Italian Switzerland,
-            it-IT Italian Italy, ja-JP Japanese Japan, jv-ID Javanese Indonesia,
-            km-KH Khmer Cambodia, kn-IN Kannada India, ko-KR Korean South Korea,
-            lo-LA Lao Laos, lt-LT Lithuanian Lithuania, lv-LV Latvian Latvia,
-            ml-IN Malayalam India, mr-IN Marathi India, ms-MY Malay Malaysia,
-            nb-NO Norwegian Bokmål Norway, ne-NP Nepali Nepal, nl-BE Dutch Belgium,
-            nl-NL Dutch Netherlands, no-NO Norwegian Norway, pa-IN Punjabi India,
-            pl-PL Polish Poland, pt-BR Portuguese Brazil, pt-PT Portuguese Portugal,
-            ro-RO Romanian Romania, ru-RU Russian Russia, si-LK Sinhala Sri Lanka,
-            sk-SK Slovak Slovakia, sl-SI Slovenian Slovenia, sq-AL Albanian Albania,
-            sr-RS Serbian Serbia, sv-FI Swedish Finland, sv-SE Swedish Sweden,
-            sw-KE Swahili Kenya, ta-IN Tamil India, te-IN Telugu India,
-            th-TH Thai Thailand, tr-TR Turkish Turkey, uk-UA Ukrainian Ukraine,
-            ur-PK Urdu Pakistan, vi-VN Vietnamese Vietnam, zh-CN Chinese China,
-            zh-HK Chinese Hong Kong, zh-SG Chinese Singapore, zh-TW Chinese Taiwan,
-            zu-ZA Zulu South Africa
-        `;
+        // The short list of BCP 47 root codes provided by the user
+        const languagesToCheck = [
+            'af', 'am', 'ar', 'az', 'be', 'bg', 'bn', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 
+            'el', 'en', 'es', 'et', 'fa', 'fi', 'fil', 'fr', 'ga', 'gl', 'gu', 'he', 'hi', 
+            'hr', 'hu', 'id', 'is', 'it', 'ja', 'jv', 'km', 'kn', 'ko', 'lo', 'lt', 'lv', 
+            'ml', 'mr', 'ms', 'nb', 'ne', 'nl', 'no', 'pa', 'pl', 'pt', 'ro', 'ru', 'si', 
+            'sk', 'sl', 'sq', 'sr', 'sv', 'sw', 'ta', 'te', 'th', 'tr', 'uk', 'ur', 'vi', 
+            'zh', 'zu'
+        ];
 
-        // Map for easy lookup: 'en' -> 'English'
-        const languageMap = new Map();
-        
-        // Set to store unique root codes: 'en', 'es', etc.
-        const uniqueRootCodes = new Set();
+        // A simple map for displaying human-readable names
+        const languageMap = new Map(Object.entries({
+            'af': 'Afrikaans', 'am': 'Amharic', 'ar': 'Arabic', 'az': 'Azerbaijani',
+            'be': 'Belarusian', 'bg': 'Bulgarian', 'bn': 'Bengali', 'bs': 'Bosnian',
+            'ca': 'Catalan', 'cs': 'Czech', 'cy': 'Welsh', 'da': 'Danish',
+            'de': 'German', 'el': 'Greek', 'en': 'English', 'es': 'Spanish',
+            'et': 'Estonian', 'fa': 'Persian', 'fi': 'Finnish', 'fil': 'Filipino',
+            'fr': 'French', 'ga': 'Irish', 'gl': 'Galician', 'gu': 'Gujarati',
+            'he': 'Hebrew', 'hi': 'Hindi', 'hr': 'Croatian', 'hu': 'Hungarian',
+            'id': 'Indonesian', 'is': 'Icelandic', 'it': 'Italian', 'ja': 'Japanese',
+            'jv': 'Javanese', 'km': 'Khmer', 'kn': 'Kannada', 'ko': 'Korean',
+            'lo': 'Lao', 'lt': 'Lithuanian', 'lv': 'Latvian', 'ml': 'Malayalam',
+            'mr': 'Marathi', 'ms': 'Malay', 'nb': 'Norwegian Bokmål', 'ne': 'Nepali',
+            'nl': 'Dutch', 'no': 'Norwegian', 'pa': 'Punjabi', 'pl': 'Polish',
+            'pt': 'Portuguese', 'ro': 'Romanian', 'ru': 'Russian', 'si': 'Sinhala',
+            'sk': 'Slovak', 'sl': 'Slovenian', 'sq': 'Albanian', 'sr': 'Serbian',
+            'sv': 'Swedish', 'sw': 'Swahili', 'ta': 'Tamil', 'te': 'Telugu',
+            'th': 'Thai', 'tr': 'Turkish', 'uk': 'Ukrainian', 'ur': 'Urdu',
+            'vi': 'Vietnamese', 'zh': 'Chinese', 'zu': 'Zulu'
+        }));
 
-        fullLanguageList.trim().split(',').forEach(line => {
-            const parts = line.trim().split(/\s+/);
-            if (parts.length >= 2) {
-                const code = parts[0]; // e.g., 'en-US'
-                const rootCode = code.split('-')[0]; // e.g., 'en'
-                // Reconstruct the language name without the region/country details
-                const name = parts.slice(1).join(' ').replace(/\s+([A-Z]{2}|\d{3})$/g, '').trim(); 
-
-                // Map root code to its full, human-readable name (using the first entry found)
-                if (!languageMap.has(rootCode)) {
-                    // Normalize the name, removing country names which were appended after the language name
-                    languageMap.set(rootCode, name.replace(/(\s[A-Z][a-z]+)+$/g, '').trim());
-                }
-                
-                uniqueRootCodes.add(rootCode);
-            }
-        });
-
-        // Convert Set to Array for iteration
-        const languagesToCheck = Array.from(uniqueRootCodes);
         const totalLanguages = languagesToCheck.length;
         const totalChecks = totalLanguages * 3; // L->EN, EN->L, L->L
 
