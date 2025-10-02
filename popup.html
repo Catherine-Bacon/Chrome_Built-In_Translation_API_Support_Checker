@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translator API Checker</title>
+    <!-- Simple, compact styles for extension popup -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            width: 380px; /* Standard extension popup width */
+            min-height: 200px;
+            padding: 12px;
+            background-color: #f3f4f6;
+        }
+        h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        .status-box {
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 12px;
+            border: 1px solid;
+            font-size: 0.875rem;
+        }
+        .status-yellow {
+            background-color: #fffbeb;
+            color: #b45309;
+            border-color: #fcd34d;
+        }
+        .status-blue {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            border-color: #93c5fd;
+        }
+        .status-red {
+            background-color: #fef2f2;
+            color: #b91c1c;
+            border-color: #fca5a5;
+        }
+        .status-green {
+            background-color: #f0fdf4;
+            color: #15803d;
+            border-color: #86efac;
+        }
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            cursor: pointer;
+            list-style: none; 
+        }
+        details {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        details > summary {
+            list-style: none;
+            padding: 12px;
+            background-color: #f9fafb;
+            transition: background-color 0.1s;
+        }
+        details > summary:hover {
+            background-color: #f3f4f6;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        details[open] .chevron {
+            transform: rotate(90deg);
+        }
+        .result-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 2px 0;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .text-sm { font-size: 0.875rem; }
+        .font-semibold { font-weight: 600; }
+        .text-lg { font-size: 1.125rem; }
+        .space-x-3 > * + * { margin-left: 0.75rem; }
+    </style>
+</head>
+<body>
+    <h1>AI Translator API Status</h1>
+
+    <div id="status" class="status-box status-yellow">
+        Initializing extension and checking browser support...
+    </div>
+
+    <div class="space-y-2" id="results-container">
+        <!-- Results will be injected here -->
+    </div>
+
+    <div id="progress" class="mt-4 text-center text-gray-600">
+        <p id="progress-text" class="text-xs text-gray-500"></p>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>
